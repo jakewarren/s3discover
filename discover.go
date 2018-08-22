@@ -11,6 +11,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
+func init() {
+	log.SetLevel(log.WarnLevel)
+}
+
 // Discover scrapes a domain, returning a list of buckets discovered
 func Discover(domain string) (buckets []string) {
 
