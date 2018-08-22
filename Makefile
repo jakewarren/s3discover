@@ -20,15 +20,15 @@ endif
 
 #Build release builds
 release: gox
-	@gox -osarch="darwin/386 darwin/amd64 linux/386 linux/amd64 windows/386 windows/amd64" ${LDFLAGS} -output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}"
+	@gox -osarch="darwin/386 darwin/amd64 linux/386 linux/amd64 windows/386 windows/amd64" ${LDFLAGS} -output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}" ./...
 
 #Build a development build
-dev: 
-	@go build ${LDFLAGS_DEV} -o bin/${BINARY}
+dev:
+	@go build ${LDFLAGS_DEV} -o bin/${BINARY} github.com/jakewarren/s3discover/cmd/s3discover
 
 #Install a release build on your local system
 install: clean
-	@go install ${LDFLAGS}
+	@go install ${LDFLAGS} ./...
 
 clean: 
 	@go clean -i

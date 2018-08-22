@@ -1,57 +1,21 @@
-package main
+package s3discover
 
 import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 
 	"github.com/apex/log"
-	"github.com/apex/log/handlers/cli"
 	"github.com/gocolly/colly"
-	"github.com/spf13/pflag"
 )
 
-var version string
-
-func main() {
-
-	displayHelp := pflag.BoolP("help", "h", false, "display help")
-	debugLevel := pflag.BoolP("debug", "d", false, "enable debug logging")
-	verboseLevel := pflag.BoolP("verbose", "v", false, "enable verbose output")
-	displayVersion := pflag.BoolP("version", "V", false, "display version")
-	pflag.Parse()
-
-	if *displayVersion {
-		fmt.Println(version)
-		os.Exit(0)
-	}
-
-	// override the default usage display
-	if *displayHelp {
-		displayUsage()
-		os.Exit(0)
-	}
-
-	// set up logging
-	// logging to stderr so it can be easily discarded if user only wants the bucket names
-	log.SetHandler(cli.New(os.Stderr))
-	// set the default logging level
-	log.SetLevel(log.WarnLevel)
-
-	if *verboseLevel {
-		log.SetLevel(log.InfoLevel)
-	}
-
-	if *debugLevel {
-		log.SetLevel(log.DebugLevel)
-	}
+// Discover scrapes a domain, returning a list of buckets discovered
+func Discover(domain string) (buckets []string) {
 
 	// map to hold all unique s3bucket found
 	s3buckets := make(map[string]bool)
-	domain := pflag.Arg(0)
 
 	// Instantiate default collector
 	c := colly.NewCollector(
@@ -114,17 +78,10 @@ func main() {
 	// Start scraping
 	c.Visit(domain)
 
-	// Print all buckets that were found
+	// store all buckets that were found
 	for key := range s3buckets {
-		fmt.Println(key)
+		buckets = append(buckets, key)
 	}
-}
 
-// print custom usage instead of the default provided by pflag
-func displayUsage() {
-
-	fmt.Printf("Usage: s3discover [<flags>] <domain>\n\n")
-	fmt.Printf("Example: s3discover github.com\n\n")
-	fmt.Printf("Optional flags:\n\n")
-	pflag.PrintDefaults()
+	return
 }
