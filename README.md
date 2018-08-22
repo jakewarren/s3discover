@@ -34,11 +34,33 @@ Optional flags:
 ```
 ## Example
 
+### As a library:
+
+```golang
+package main
+
+import (
+	"fmt"
+
+	"github.com/jakewarren/s3discover"
+)
+
+func main() {
+	buckets := s3discover.Discover("github.com")
+	fmt.Println(buckets)
+	// Output: [shopifyorderlimits.s3.amazonaws.com github-cloud.s3.amazonaws.com]
+}
+```
+
+### CLI utility:
 ```
 ❯ s3discover github.com
 shopifyorderlimits.s3.amazonaws.com
 github-cloud.s3.amazonaws.com
 ```
+## Contributors
+
+* [MasenkoHa](https://github.com/MasenkoHa)
 
 ## Similar Projects
 
